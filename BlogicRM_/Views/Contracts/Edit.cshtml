@@ -1,0 +1,49 @@
+﻿@model BlogicRM_.Models.Contract
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Contract</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ContractID" />
+            <div class="form-group">
+                <label asp-for="EvidenceNumber" class="control-label"></label>
+                <input asp-for="EvidenceNumber" class="form-control" />
+                <span asp-validation-for="EvidenceNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ConclusionDate" class="control-label"></label>
+                <input asp-for="ConclusionDate" class="form-control" />
+                <span asp-validation-for="ConclusionDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ValidityDate" class="control-label"></label>
+                <input asp-for="ValidityDate" class="form-control" />
+                <span asp-validation-for="ValidityDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDate" class="control-label"></label>
+                <input asp-for="EndDate" class="form-control" />
+                <span asp-validation-for="EndDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
