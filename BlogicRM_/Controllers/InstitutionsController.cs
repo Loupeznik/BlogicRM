@@ -10,22 +10,22 @@ using BlogicRM_.Models;
 
 namespace BlogicRM_.Controllers
 {
-    public class ClientsController : Controller
+    public class InstitutionsController : Controller
     {
         private readonly BlogicRM _context;
 
-        public ClientsController(BlogicRM context)
+        public InstitutionsController(BlogicRM context)
         {
             _context = context;
         }
 
-        // GET: Clients
+        // GET: Institutions
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Client.ToListAsync());
+            return View(await _context.Institution.ToListAsync());
         }
 
-        // GET: Clients/Details/5
+        // GET: Institutions/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace BlogicRM_.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Client
-                .FirstOrDefaultAsync(m => m.ClientID == id);
-            if (client == null)
+            var institution = await _context.Institution
+                .FirstOrDefaultAsync(m => m.InstitutionID == id);
+            if (institution == null)
             {
                 return NotFound();
             }
 
-            return View(client);
+            return View(institution);
         }
 
-        // GET: Clients/Create
+        // GET: Institutions/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Clients/Create
+        // POST: Institutions/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClientID,Name,Surname,Email,BirthNumber,Age,Phone")] Client client)
+        public async Task<IActionResult> Create([Bind("InstitutionID,Name")] Institution institution)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(client);
+                _context.Add(institution);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(client);
+            return View(institution);
         }
 
-        // GET: Clients/Edit/5
+        // GET: Institutions/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace BlogicRM_.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Client.FindAsync(id);
-            if (client == null)
+            var institution = await _context.Institution.FindAsync(id);
+            if (institution == null)
             {
                 return NotFound();
             }
-            return View(client);
+            return View(institution);
         }
 
-        // POST: Clients/Edit/5
+        // POST: Institutions/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClientID,Name,Surname,Email,BirthNumber,Age,Phone")] Client client)
+        public async Task<IActionResult> Edit(int id, [Bind("InstitutionID,Name")] Institution institution)
         {
-            if (id != client.ClientID)
+            if (id != institution.InstitutionID)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace BlogicRM_.Controllers
             {
                 try
                 {
-                    _context.Update(client);
+                    _context.Update(institution);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClientExists(client.ClientID))
+                    if (!InstitutionExists(institution.InstitutionID))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace BlogicRM_.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(client);
+            return View(institution);
         }
 
-        // GET: Clients/Delete/5
+        // GET: Institutions/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace BlogicRM_.Controllers
                 return NotFound();
             }
 
-            var client = await _context.Client
-                .FirstOrDefaultAsync(m => m.ClientID == id);
-            if (client == null)
+            var institution = await _context.Institution
+                .FirstOrDefaultAsync(m => m.InstitutionID == id);
+            if (institution == null)
             {
                 return NotFound();
             }
 
-            return View(client);
+            return View(institution);
         }
 
-        // POST: Clients/Delete/5
+        // POST: Institutions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var client = await _context.Client.FindAsync(id);
-            _context.Client.Remove(client);
+            var institution = await _context.Institution.FindAsync(id);
+            _context.Institution.Remove(institution);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ClientExists(int id)
+        private bool InstitutionExists(int id)
         {
-            return _context.Client.Any(e => e.ClientID == id);
+            return _context.Institution.Any(e => e.InstitutionID == id);
         }
     }
 }

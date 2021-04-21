@@ -10,12 +10,13 @@ namespace BlogicRM_.Models
     public class Advisor : GenericPerson
     {
         [Key]
-        public Guid AdvisorID { get; set; }
+        public int AdvisorID { get; set; }
 
+        [Display(Name = "Spravuje")]
         [InverseProperty("Administrator")]
         public List<Contract> Administering { get; set; }
 
-        [InverseProperty("Advisors")]
-        public ICollection<Contract> Contracts { get; set; }
+        public ICollection<ContractAdvisor> Contracts { get; set; }
+
     }
 }

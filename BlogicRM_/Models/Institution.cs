@@ -11,6 +11,7 @@ namespace BlogicRM_.Models
         [Key]
         public int InstitutionID { get; set; }
 
+        [Display(Name = "Název instituce")]
         [Required]
         public string Name { get; set; }
     }

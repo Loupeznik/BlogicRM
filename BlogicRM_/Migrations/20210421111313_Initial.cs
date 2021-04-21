@@ -11,7 +11,8 @@ namespace BlogicRM_.Migrations
                 name: "Advisor",
                 columns: table => new
                 {
-                    AdvisorID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AdvisorID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -28,7 +29,8 @@ namespace BlogicRM_.Migrations
                 name: "Client",
                 columns: table => new
                 {
-                    ClientID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -58,71 +60,65 @@ namespace BlogicRM_.Migrations
                 name: "Contract",
                 columns: table => new
                 {
-                    ContractID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ContractID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     EvidenceNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InstitutionID = table.Column<int>(type: "int", nullable: true),
-                    AdministratorAdvisorID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    InstitutionID = table.Column<int>(type: "int", nullable: false),
+                    ClientID = table.Column<int>(type: "int", nullable: false),
+                    AdministratorID = table.Column<int>(type: "int", nullable: false),
                     ConclusionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ValidityDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ClientID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Contract", x => x.ContractID);
                     table.ForeignKey(
-                        name: "FK_Contract_Advisor_AdministratorAdvisorID",
-                        column: x => x.AdministratorAdvisorID,
+                        name: "FK_Contract_Advisor_AdministratorID",
+                        column: x => x.AdministratorID,
                         principalTable: "Advisor",
                         principalColumn: "AdvisorID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Contract_Client_ClientID",
                         column: x => x.ClientID,
                         principalTable: "Client",
                         principalColumn: "ClientID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Contract_Institution_InstitutionID",
                         column: x => x.InstitutionID,
                         principalTable: "Institution",
                         principalColumn: "InstitutionID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdvisorContract",
+                name: "ContractAdvisor",
                 columns: table => new
                 {
-                    AdvisorsAdvisorID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ContractsContractID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    ContractID = table.Column<int>(type: "int", nullable: false),
+                    AdvisorID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AdvisorContract", x => new { x.AdvisorsAdvisorID, x.ContractsContractID });
+                    table.PrimaryKey("PK_ContractAdvisor", x => new { x.ContractID, x.AdvisorID });
                     table.ForeignKey(
-                        name: "FK_AdvisorContract_Advisor_AdvisorsAdvisorID",
-                        column: x => x.AdvisorsAdvisorID,
+                        name: "FK_ContractAdvisor_Advisor_AdvisorID",
+                        column: x => x.AdvisorID,
                         principalTable: "Advisor",
-                        principalColumn: "AdvisorID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "AdvisorID");
                     table.ForeignKey(
-                        name: "FK_AdvisorContract_Contract_ContractsContractID",
-                        column: x => x.ContractsContractID,
+                        name: "FK_ContractAdvisor_Contract_ContractID",
+                        column: x => x.ContractID,
                         principalTable: "Contract",
-                        principalColumn: "ContractID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ContractID");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AdvisorContract_ContractsContractID",
-                table: "AdvisorContract",
-                column: "ContractsContractID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Contract_AdministratorAdvisorID",
+                name: "IX_Contract_AdministratorID",
                 table: "Contract",
-                column: "AdministratorAdvisorID");
+                column: "AdministratorID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contract_ClientID",
@@ -133,12 +129,17 @@ namespace BlogicRM_.Migrations
                 name: "IX_Contract_InstitutionID",
                 table: "Contract",
                 column: "InstitutionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ContractAdvisor_AdvisorID",
+                table: "ContractAdvisor",
+                column: "AdvisorID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AdvisorContract");
+                name: "ContractAdvisor");
 
             migrationBuilder.DropTable(
                 name: "Contract");

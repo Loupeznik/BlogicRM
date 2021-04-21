@@ -9,6 +9,6 @@ namespace BlogicRM_.Models
     public class Client : GenericPerson
     { 
         [Key]
-        public Guid ClientID { get; set; }
+        public int ClientID { get; set; }
     }
 }

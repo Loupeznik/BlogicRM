@@ -26,7 +26,7 @@ namespace BlogicRM_.Controllers
         }
 
         // GET: Advisors/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -58,7 +58,6 @@ namespace BlogicRM_.Controllers
         {
             if (ModelState.IsValid)
             {
-                advisor.AdvisorID = Guid.NewGuid();
                 _context.Add(advisor);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -67,7 +66,7 @@ namespace BlogicRM_.Controllers
         }
 
         // GET: Advisors/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -87,7 +86,7 @@ namespace BlogicRM_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("AdvisorID,Name,Surname,Email,BirthNumber,Age,Phone")] Advisor advisor)
+        public async Task<IActionResult> Edit(int id, [Bind("AdvisorID,Name,Surname,Email,BirthNumber,Age,Phone")] Advisor advisor)
         {
             if (id != advisor.AdvisorID)
             {
@@ -118,7 +117,7 @@ namespace BlogicRM_.Controllers
         }
 
         // GET: Advisors/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -138,7 +137,7 @@ namespace BlogicRM_.Controllers
         // POST: Advisors/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var advisor = await _context.Advisor.FindAsync(id);
             _context.Advisor.Remove(advisor);
@@ -146,7 +145,7 @@ namespace BlogicRM_.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AdvisorExists(Guid id)
+        private bool AdvisorExists(int id)
         {
             return _context.Advisor.Any(e => e.AdvisorID == id);
         }

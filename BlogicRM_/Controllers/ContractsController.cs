@@ -22,11 +22,12 @@ namespace BlogicRM_.Controllers
         // GET: Contracts
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Contract.ToListAsync());
+            var blogicRM = _context.Contract.Include(c => c.Administrator).Include(c => c.Client).Include(c => c.Institution);
+            return View(await blogicRM.ToListAsync());
         }
 
         // GET: Contracts/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -34,6 +35,9 @@ namespace BlogicRM_.Controllers
             }
 
             var contract = await _context.Contract
+                .Include(c => c.Administrator)
+                .Include(c => c.Client)
+                .Include(c => c.Institution)
                 .FirstOrDefaultAsync(m => m.ContractID == id);
             if (contract == null)
             {
@@ -46,6 +50,9 @@ namespace BlogicRM_.Controllers
         // GET: Contracts/Create
         public IActionResult Create()
         {
+            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "BirthNumber");
+            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "BirthNumber");
+            ViewData["InstitutionID"] = new SelectList(_context.Institution, "InstitutionID", "Name");
             return View();
         }
 
@@ -54,20 +61,22 @@ namespace BlogicRM_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ContractID,EvidenceNumber,ConclusionDate,ValidityDate,EndDate")] Contract contract)
+        public async Task<IActionResult> Create([Bind("ContractID,EvidenceNumber,InstitutionID,ClientID,AdministratorID,ConclusionDate,ValidityDate,EndDate")] Contract contract)
         {
             if (ModelState.IsValid)
             {
-                contract.ContractID = Guid.NewGuid();
                 _context.Add(contract);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "BirthNumber", contract.AdministratorID);
+            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "BirthNumber", contract.ClientID);
+            ViewData["InstitutionID"] = new SelectList(_context.Institution, "InstitutionID", "Name", contract.InstitutionID);
             return View(contract);
         }
 
         // GET: Contracts/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
             {
@@ -79,6 +88,9 @@ namespace BlogicRM_.Controllers
             {
                 return NotFound();
             }
+            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "BirthNumber", contract.AdministratorID);
+            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "BirthNumber", contract.ClientID);
+            ViewData["InstitutionID"] = new SelectList(_context.Institution, "InstitutionID", "Name", contract.InstitutionID);
             return View(contract);
         }
 
@@ -87,7 +99,7 @@ namespace BlogicRM_.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("ContractID,EvidenceNumber,ConclusionDate,ValidityDate,EndDate")] Contract contract)
+        public async Task<IActionResult> Edit(int id, [Bind("ContractID,EvidenceNumber,InstitutionID,ClientID,AdministratorID,ConclusionDate,ValidityDate,EndDate")] Contract contract)
         {
             if (id != contract.ContractID)
             {
@@ -114,11 +126,14 @@ namespace BlogicRM_.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "BirthNumber", contract.AdministratorID);
+            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "BirthNumber", contract.ClientID);
+            ViewData["InstitutionID"] = new SelectList(_context.Institution, "InstitutionID", "Name", contract.InstitutionID);
             return View(contract);
         }
 
         // GET: Contracts/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
@@ -126,6 +141,9 @@ namespace BlogicRM_.Controllers
             }
 
             var contract = await _context.Contract
+                .Include(c => c.Administrator)
+                .Include(c => c.Client)
+                .Include(c => c.Institution)
                 .FirstOrDefaultAsync(m => m.ContractID == id);
             if (contract == null)
             {
@@ -138,7 +156,7 @@ namespace BlogicRM_.Controllers
         // POST: Contracts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var contract = await _context.Contract.FindAsync(id);
             _context.Contract.Remove(contract);
@@ -146,7 +164,7 @@ namespace BlogicRM_.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ContractExists(Guid id)
+        private bool ContractExists(int id)
         {
             return _context.Contract.Any(e => e.ContractID == id);
         }

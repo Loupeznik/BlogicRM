@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogicRM_.Migrations
 {
     [DbContext(typeof(BlogicRM))]
-    [Migration("20210420181903_Initial")]
+    [Migration("20210421111313_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,26 +21,12 @@ namespace BlogicRM_.Migrations
                 .HasAnnotation("ProductVersion", "5.0.4")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("AdvisorContract", b =>
-                {
-                    b.Property<Guid>("AdvisorsAdvisorID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ContractsContractID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("AdvisorsAdvisorID", "ContractsContractID");
-
-                    b.HasIndex("ContractsContractID");
-
-                    b.ToTable("AdvisorContract");
-                });
-
             modelBuilder.Entity("BlogicRM_.Models.Advisor", b =>
                 {
-                    b.Property<Guid>("AdvisorID")
+                    b.Property<int>("AdvisorID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
@@ -72,9 +58,10 @@ namespace BlogicRM_.Migrations
 
             modelBuilder.Entity("BlogicRM_.Models.Client", b =>
                 {
-                    b.Property<Guid>("ClientID")
+                    b.Property<int>("ClientID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
@@ -106,15 +93,16 @@ namespace BlogicRM_.Migrations
 
             modelBuilder.Entity("BlogicRM_.Models.Contract", b =>
                 {
-                    b.Property<Guid>("ContractID")
+                    b.Property<int>("ContractID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<Guid?>("AdministratorAdvisorID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("AdministratorID")
+                        .HasColumnType("int");
 
-                    b.Property<Guid?>("ClientID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ClientID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("ConclusionDate")
                         .HasColumnType("datetime2");
@@ -126,7 +114,7 @@ namespace BlogicRM_.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("InstitutionID")
+                    b.Property<int>("InstitutionID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ValidityDate")
@@ -134,13 +122,28 @@ namespace BlogicRM_.Migrations
 
                     b.HasKey("ContractID");
 
-                    b.HasIndex("AdministratorAdvisorID");
+                    b.HasIndex("AdministratorID");
 
                     b.HasIndex("ClientID");
 
                     b.HasIndex("InstitutionID");
 
                     b.ToTable("Contract");
+                });
+
+            modelBuilder.Entity("BlogicRM_.Models.ContractAdvisor", b =>
+                {
+                    b.Property<int>("ContractID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AdvisorID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ContractID", "AdvisorID");
+
+                    b.HasIndex("AdvisorID");
+
+                    b.ToTable("ContractAdvisor");
                 });
 
             modelBuilder.Entity("BlogicRM_.Models.Institution", b =>
@@ -159,34 +162,25 @@ namespace BlogicRM_.Migrations
                     b.ToTable("Institution");
                 });
 
-            modelBuilder.Entity("AdvisorContract", b =>
-                {
-                    b.HasOne("BlogicRM_.Models.Advisor", null)
-                        .WithMany()
-                        .HasForeignKey("AdvisorsAdvisorID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BlogicRM_.Models.Contract", null)
-                        .WithMany()
-                        .HasForeignKey("ContractsContractID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BlogicRM_.Models.Contract", b =>
                 {
                     b.HasOne("BlogicRM_.Models.Advisor", "Administrator")
                         .WithMany("Administering")
-                        .HasForeignKey("AdministratorAdvisorID");
+                        .HasForeignKey("AdministratorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BlogicRM_.Models.Client", "Client")
                         .WithMany()
-                        .HasForeignKey("ClientID");
+                        .HasForeignKey("ClientID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("BlogicRM_.Models.Institution", "Institution")
                         .WithMany()
-                        .HasForeignKey("InstitutionID");
+                        .HasForeignKey("InstitutionID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Administrator");
 
@@ -195,9 +189,35 @@ namespace BlogicRM_.Migrations
                     b.Navigation("Institution");
                 });
 
+            modelBuilder.Entity("BlogicRM_.Models.ContractAdvisor", b =>
+                {
+                    b.HasOne("BlogicRM_.Models.Advisor", "Advisor")
+                        .WithMany("Contracts")
+                        .HasForeignKey("AdvisorID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BlogicRM_.Models.Contract", "Contract")
+                        .WithMany("Advisors")
+                        .HasForeignKey("ContractID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Advisor");
+
+                    b.Navigation("Contract");
+                });
+
             modelBuilder.Entity("BlogicRM_.Models.Advisor", b =>
                 {
                     b.Navigation("Administering");
+
+                    b.Navigation("Contracts");
+                });
+
+            modelBuilder.Entity("BlogicRM_.Models.Contract", b =>
+                {
+                    b.Navigation("Advisors");
                 });
 #pragma warning restore 612, 618
         }
