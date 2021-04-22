@@ -16,11 +16,13 @@ namespace BlogicRM_.Models
         [Required]
         public string EvidenceNumber { get; set; }
 
-
+        [Display(Name = "Instituce")]
         public int InstitutionID { get; set; }
 
+        [Display(Name = "Klient")]
         public int ClientID { get; set; }
 
+        [Display(Name = "Správce")]
         public int AdministratorID { get; set; }
 
         [Display(Name = "Datum uzavření")]

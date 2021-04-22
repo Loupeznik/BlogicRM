@@ -27,5 +27,8 @@ namespace BlogicRM_.Models
         [Display(Name = "Telefonní číslo")]
         [Required]
         public string Phone { get; set; }
+
+        [Display(Name = "Celé jméno")]
+        public string FullName => string.Format("{0} {1}", Name, Surname);
     }
 }

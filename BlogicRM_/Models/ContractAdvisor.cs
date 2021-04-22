@@ -9,7 +9,8 @@ namespace BlogicRM_.Models
     {
         public int ContractID { get; set; }
         public int AdvisorID { get; set; }
-        public Advisor Advisor { get; set; }
+
         public Contract Contract { get; set; }
+        public Advisor Advisor { get; set; }
     }
 }

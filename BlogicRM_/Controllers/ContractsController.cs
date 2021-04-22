@@ -39,10 +39,19 @@ namespace BlogicRM_.Controllers
                 .Include(c => c.Client)
                 .Include(c => c.Institution)
                 .FirstOrDefaultAsync(m => m.ContractID == id);
+            var advisors = _context.contractAdvisor.Where(c => c.ContractID == id);
+            List<string> advisorList = new List<string>();
+            foreach (var advisor in advisors)
+            {
+                var advisorName = _context.Advisor.Where(a => a.AdvisorID == advisor.AdvisorID).First().FullName;
+                advisorList.Add(advisorName);
+            }
             if (contract == null)
             {
                 return NotFound();
             }
+
+            ViewData["Advisors"] = advisorList;
 
             return View(contract);
         }
@@ -50,8 +59,8 @@ namespace BlogicRM_.Controllers
         // GET: Contracts/Create
         public IActionResult Create()
         {
-            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "BirthNumber");
-            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "BirthNumber");
+            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "FullName");
+            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "FullName");
             ViewData["InstitutionID"] = new SelectList(_context.Institution, "InstitutionID", "Name");
             return View();
         }
@@ -67,10 +76,12 @@ namespace BlogicRM_.Controllers
             {
                 _context.Add(contract);
                 await _context.SaveChangesAsync();
+                _context.Add(new ContractAdvisor { ContractID = contract.ContractID, AdvisorID = contract.AdministratorID });
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "BirthNumber", contract.AdministratorID);
-            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "BirthNumber", contract.ClientID);
+            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "FullName", contract.AdministratorID);
+            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "FullName", contract.ClientID);
             ViewData["InstitutionID"] = new SelectList(_context.Institution, "InstitutionID", "Name", contract.InstitutionID);
             return View(contract);
         }
@@ -88,8 +99,8 @@ namespace BlogicRM_.Controllers
             {
                 return NotFound();
             }
-            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "BirthNumber", contract.AdministratorID);
-            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "BirthNumber", contract.ClientID);
+            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "FullName", contract.AdministratorID);
+            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "FullName", contract.ClientID);
             ViewData["InstitutionID"] = new SelectList(_context.Institution, "InstitutionID", "Name", contract.InstitutionID);
             return View(contract);
         }
@@ -126,8 +137,8 @@ namespace BlogicRM_.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "BirthNumber", contract.AdministratorID);
-            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "BirthNumber", contract.ClientID);
+            ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "FullName", contract.AdministratorID);
+            ViewData["ClientID"] = new SelectList(_context.Client, "ClientID", "FullName", contract.ClientID);
             ViewData["InstitutionID"] = new SelectList(_context.Institution, "InstitutionID", "Name", contract.InstitutionID);
             return View(contract);
         }
@@ -159,7 +170,58 @@ namespace BlogicRM_.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var contract = await _context.Contract.FindAsync(id);
+            var advisors = _context.contractAdvisor.Where(c => c.ContractID == id);
+            foreach (var advisor in advisors)
+            {
+                _context.contractAdvisor.Remove(advisor);
+            }
+            await _context.SaveChangesAsync();
             _context.Contract.Remove(contract);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Contracts/Advisors/5
+        public async Task<IActionResult> Advisors(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var contract = await _context.Contract.FindAsync(id);
+            if (contract == null)
+            {
+                return NotFound();
+            }
+            Dictionary<int, string> advisors = FindAdvisors(id);
+            ViewData["Advisors"] = advisors;
+            ViewData["AdvisorID"] = new SelectList(_context.Advisor, "AdvisorID", "FullName");
+            //ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "FullName", contract.AdministratorID);
+            return View(contract);
+        }
+
+        // POST: Contracts/Advisors/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddAdvisor(int id, int advisorId)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(new ContractAdvisor { ContractID = id, AdvisorID = advisorId });
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Contracts/DeleteAdvisor/5
+        [HttpPost, ActionName("DeleteAdvisor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAdvisor(int id, int advisorId)
+        {
+            var record = await _context.contractAdvisor.Where(ca => ca.ContractID == id).Where(ca => ca.AdvisorID == advisorId).FirstAsync();
+            _context.contractAdvisor.Remove(record);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -167,6 +229,24 @@ namespace BlogicRM_.Controllers
         private bool ContractExists(int id)
         {
             return _context.Contract.Any(e => e.ContractID == id);
+        }
+
+        private Dictionary<int, string> FindAdvisors(int? id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            var advisors = _context.contractAdvisor.Where(c => c.ContractID == id);
+            Dictionary<int, string> advisorDict = new Dictionary<int, string>();
+            foreach (var advisor in advisors)
+            {
+                var advisorName = _context.Advisor.Where(a => a.AdvisorID == advisor.AdvisorID).First().FullName;
+                var advisorId = _context.Advisor.Where(a => a.AdvisorID == advisor.AdvisorID).First().AdvisorID;
+                advisorDict.Add(advisorId, advisorName);
+            }
+            return advisorDict;
         }
     }
 }

@@ -1,0 +1,73 @@
+﻿@model BlogicRM_.Models.Contract
+
+@{
+    ViewData["Title"] = "Poradci";
+}
+
+<h1>Poradci</h1>
+
+<div>
+    <h4>Contract</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EvidenceNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EvidenceNumber)
+        </dd>
+        <dt class="col-sm-2">
+            Poradci
+        </dt>
+        @foreach (var advisor in ViewBag.Advisors)
+        {
+            @advisor
+        }
+    </dl>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Jméno a příjmení
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (KeyValuePair<int, string> advisor in ViewBag.Advisors)
+        {
+        <tr>
+            <td>
+                @advisor.Value
+            </td>
+            <td>
+                @using (Html.BeginForm("DeleteAdvisor", "Contracts", new { id = Model.ContractID, advisorId = advisor.Key }))
+                {
+                    <input type="submit" value="Delete" onclick="return confirm('Opravdu chcete z této smlouvy odstranit poradce = @advisor.Value');" />
+                }
+            </td>
+        </tr>
+            }
+    </tbody>
+</table>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddAdvisor">
+            <div class="form-group">
+                <input type="hidden" name="id" value="@Model.ContractID" />
+                <label class="control-label">Poradce</label>
+                <select name="advisorId" class="form-control" asp-items="ViewBag.AdvisorID"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
