@@ -39,19 +39,13 @@ namespace BlogicRM_.Controllers
                 .Include(c => c.Client)
                 .Include(c => c.Institution)
                 .FirstOrDefaultAsync(m => m.ContractID == id);
-            var advisors = _context.contractAdvisor.Where(c => c.ContractID == id);
-            List<string> advisorList = new List<string>();
-            foreach (var advisor in advisors)
-            {
-                var advisorName = _context.Advisor.Where(a => a.AdvisorID == advisor.AdvisorID).First().FullName;
-                advisorList.Add(advisorName);
-            }
+            Dictionary<int, string> advisors = FindAdvisors(id);
             if (contract == null)
             {
                 return NotFound();
             }
 
-            ViewData["Advisors"] = advisorList;
+            ViewData["Advisors"] = advisors;
 
             return View(contract);
         }
@@ -215,7 +209,7 @@ namespace BlogicRM_.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: Contracts/DeleteAdvisor/5
+        // POST: Contracts/DeleteAdvisor/5?advisorId=1
         [HttpPost, ActionName("DeleteAdvisor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteAdvisor(int id, int advisorId)
