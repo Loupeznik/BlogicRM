@@ -1,12 +1,12 @@
 ﻿@model BlogicRM_.Models.Contract
 
 @{
-    ViewData["Title"] = "Delete";
+    ViewData["Title"] = "Smazat smlouvu";
 }
 
-<h1>Delete</h1>
+<h1>@ViewBag.Title</h1>
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Jste si jisti, že chcete tuto smlouvu smazat?</h3>
 <div>
     <h4>Contract</h4>
     <hr />
@@ -58,6 +58,6 @@
     <form asp-action="Delete">
         <input type="hidden" asp-for="ContractID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index">Zpět na seznam smluv</a>
     </form>
 </div>

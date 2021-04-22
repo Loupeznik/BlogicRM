@@ -37,8 +37,14 @@ namespace BlogicRM_.Models
         [Required]
         public DateTime EndDate { get; set; }
 
+        [Display(Name = "Instituce")]
+
         public Institution Institution { get; set; }
+
+        [Display(Name = "Klient")]
         public Client Client { get; set; }
+
+        [Display(Name = "Poradce")]
         public Advisor Administrator { get; set; }
 
         public ICollection<ContractAdvisor> Advisors { get; set; }

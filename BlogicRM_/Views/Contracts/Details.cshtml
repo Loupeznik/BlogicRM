@@ -1,13 +1,13 @@
 ﻿@model BlogicRM_.Models.Contract
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Podrobnosti";
 }
 
-<h1>Details</h1>
+<h1>@ViewBag.Title</h1>
 
 <div>
-    <h4>Contract</h4>
+    <h4>Smlouva</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -38,30 +38,33 @@
             @Html.DisplayNameFor(model => model.Institution)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Institution.Name)
-        </dd>
+            <a asp-controller="Institutions" asp-action="Details" asp-route-id="@Model.InstitutionID">@Html.DisplayFor(model => model.Institution.Name)</a>
+</dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Client)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Client.FullName)
+            <a asp-controller="Clients" asp-action="Details" asp-route-id="@Model.ClientID">@Html.DisplayFor(model => model.Client.FullName)</a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Administrator)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Administrator.FullName)
-        </dd>
+            <a asp-controller="Advisors" asp-action="Details" asp-route-id="@Model.AdministratorID">@Html.DisplayFor(model => model.Administrator.FullName)</a>
+</dd>
         <dt class="col-sm-2">
-            Poradci
+            @Html.DisplayNameFor(model => model.Advisors)
         </dt>
-        @foreach(var advisor in ViewBag.Advisors)
-        {
-            @advisor
-        }
-    </dl>
+        <dd class="col-sm-10">
+            @foreach (KeyValuePair<int, string> advisor in ViewBag.Advisors)
+            {
+                <a asp-controller="Advisors" asp-action="Details" asp-route-id="@advisor.Key">@advisor.Value</a><br />
+            }
+        </dd>
+        </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ContractID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model.ContractID">Upravit</a> |
+    <a asp-action="Advisors" asp-route-id="@Model.ContractID">Spravovat poradce</a> |
+    <a asp-action="Index">Zpět na seznam smluv</a>
 </div>

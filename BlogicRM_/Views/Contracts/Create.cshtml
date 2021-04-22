@@ -1,12 +1,12 @@
 ﻿@model BlogicRM_.Models.Contract
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Založit smlouvu";
 }
 
-<h1>Create</h1>
+<h1>@ViewBag.Title</h1>
 
-<h4>Contract</h4>
+<h4>Smlouva</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -52,7 +52,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Zpět na seznam smluv</a>
 </div>
 
 @section Scripts {

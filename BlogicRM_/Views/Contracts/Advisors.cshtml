@@ -4,10 +4,10 @@
     ViewData["Title"] = "Poradci";
 }
 
-<h1>Poradci</h1>
+<h1>@ViewBag.Title</h1>
 
 <div>
-    <h4>Contract</h4>
+    <h4>Smlouva</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -16,13 +16,6 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.EvidenceNumber)
         </dd>
-        <dt class="col-sm-2">
-            Poradci
-        </dt>
-        @foreach (var advisor in ViewBag.Advisors)
-        {
-            @advisor
-        }
     </dl>
 </div>
 
@@ -30,7 +23,7 @@
     <thead>
         <tr>
             <th>
-                Jméno a příjmení
+                @Html.DisplayFor(model => model.Administrator.FullName)
             </th>
             <th></th>
         </tr>
@@ -38,18 +31,18 @@
     <tbody>
         @foreach (KeyValuePair<int, string> advisor in ViewBag.Advisors)
         {
-        <tr>
-            <td>
-                @advisor.Value
-            </td>
-            <td>
-                @using (Html.BeginForm("DeleteAdvisor", "Contracts", new { id = Model.ContractID, advisorId = advisor.Key }))
-                {
-                    <input type="submit" value="Delete" onclick="return confirm('Opravdu chcete z této smlouvy odstranit poradce = @advisor.Value');" />
-                }
-            </td>
-        </tr>
-            }
+            <tr>
+                <td>
+                    @advisor.Value
+                </td>
+                <td>
+                    @using (Html.BeginForm("DeleteAdvisor", "Contracts", new { id = Model.ContractID, advisorId = advisor.Key }))
+                    {
+                        <input type="submit" value="Delete" onclick="return confirm('Opravdu chcete z této smlouvy odstranit poradce @advisor.Value');" />
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -69,5 +62,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Details" asp-route-id="@Model.ContractID">Zobrazit smlouvu</a> |
+    <a asp-action="Edit" asp-route-id="@Model.ContractID">Upravit smlouvu</a> |
+    <a asp-action="Index">Zpět na seznam smluv</a>
 </div>
