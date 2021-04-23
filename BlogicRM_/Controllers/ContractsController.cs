@@ -129,6 +129,11 @@ namespace BlogicRM_.Controllers
                         throw;
                     }
                 }
+                if (!(_context.contractAdvisor.Any(ca => ca.ContractID == id && ca.AdvisorID == contract.AdministratorID)))
+                {
+                    _context.Add(new ContractAdvisor { ContractID = id, AdvisorID = contract.AdministratorID });
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AdministratorID"] = new SelectList(_context.Advisor, "AdvisorID", "FullName", contract.AdministratorID);
@@ -183,6 +188,12 @@ namespace BlogicRM_.Controllers
                 return NotFound();
             }
 
+            if (TempData["message"] != null)
+            {
+                ViewBag.message = TempData["message"].ToString();
+                TempData.Remove("message");
+            }
+
             var contract = await _context.Contract.FindAsync(id);
             if (contract == null)
             {
@@ -202,11 +213,16 @@ namespace BlogicRM_.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (_context.contractAdvisor.Any(ca => ca.ContractID == id && ca.AdvisorID == advisorId))
+                {
+                    TempData["message"] = "Vybraný poradce již je k této smlouvě přiřazen";
+                    return RedirectToAction("Advisors", new { id });
+                }
                 _context.Add(new ContractAdvisor { ContractID = id, AdvisorID = advisorId });
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Advisors", new { id });
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Advisors", new { id });
         }
 
         // POST: Contracts/DeleteAdvisor/5?advisorId=1
@@ -215,9 +231,14 @@ namespace BlogicRM_.Controllers
         public async Task<IActionResult> DeleteAdvisor(int id, int advisorId)
         {
             var record = await _context.contractAdvisor.Where(ca => ca.ContractID == id).Where(ca => ca.AdvisorID == advisorId).FirstAsync();
+            if (_context.Contract.Any(c => c.AdministratorID == advisorId))
+            {
+                TempData["message"] = "Vybraného poradce nelze smazat, protože je správcem smlouvy";
+                return RedirectToAction("Advisors", new { id });
+            }
             _context.contractAdvisor.Remove(record);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Advisors", new { id });
         }
 
         private bool ContractExists(int id)
