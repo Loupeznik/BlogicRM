@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<BlogicRM_.Models.Client>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Seznam klientů";
 }
 
-<h1>Index</h1>
+<h1>@ViewBag.Title</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Vytvořit klienta</a>
 </p>
 <table class="table">
     <thead>
@@ -55,9 +55,9 @@
                 @Html.DisplayFor(modelItem => item.Phone)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.ClientID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ClientID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ClientID">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.ClientID">Upravit</a> |
+                <a asp-action="Details" asp-route-id="@item.ClientID">Podrobnosti</a> |
+                <a asp-action="Delete" asp-route-id="@item.ClientID">Smazat</a>
             </td>
         </tr>
 }
