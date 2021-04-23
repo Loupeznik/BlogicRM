@@ -25,14 +25,17 @@ namespace BlogicRM_.Models
         [Display(Name = "Správce")]
         public int AdministratorID { get; set; }
 
+        [DataType(DataType.Date)]
         [Display(Name = "Datum uzavření")]
         [Required]
         public DateTime ConclusionDate { get; set; }
 
+        [DataType(DataType.Date)]
         [Display(Name = "Datum platnosti")]
         [Required]
         public DateTime ValidityDate { get; set; }
 
+        [DataType(DataType.Date)]
         [Display(Name = "Datum ukončení")]
         [Required]
         public DateTime EndDate { get; set; }
@@ -44,9 +47,10 @@ namespace BlogicRM_.Models
         [Display(Name = "Klient")]
         public Client Client { get; set; }
 
-        [Display(Name = "Poradce")]
+        [Display(Name = "Správce")]
         public Advisor Administrator { get; set; }
 
+        [Display(Name = "Poradci")]
         public ICollection<ContractAdvisor> Advisors { get; set; }
 
     }
