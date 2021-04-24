@@ -12,10 +12,12 @@ namespace BlogicRM_.Models
         [Required]
         public string Surname { get; set; }
 
+        [DataType(DataType.EmailAddress)]
         [Display(Name = "Email")]
         [Required]
         public string Email { get; set; }
 
+        [RegularExpression(@"^[0-9]{6}\/[0-9]{3,4}$", ErrorMessage = "Neplatné rodné číslo. Rodné číslo musí být ve formátu XXXXXX/YYY nebo XXXXXX/YYYY")]
         [Display(Name = "Rodné číslo")]
         [Required]
         public string BirthNumber { get; set; }
@@ -24,6 +26,7 @@ namespace BlogicRM_.Models
         [Required]
         public int Age { get; set; }
 
+        [DataType(DataType.PhoneNumber)]
         [Display(Name = "Telefonní číslo")]
         [Required]
         public string Phone { get; set; }
