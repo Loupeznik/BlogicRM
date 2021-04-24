@@ -10,5 +10,7 @@ namespace BlogicRM_.Models
     { 
         [Key]
         public int ClientID { get; set; }
+
+        public List<Contract> Contracts { get; set; }
     }
 }

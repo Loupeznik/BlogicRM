@@ -40,6 +40,9 @@ namespace BlogicRM_.Controllers
                 return NotFound();
             }
 
+            Dictionary<int, string> contracts = FindContracts(id);
+            ViewData["Contracts"] = contracts;
+
             return View(advisor);
         }
 
@@ -148,6 +151,24 @@ namespace BlogicRM_.Controllers
         private bool AdvisorExists(int id)
         {
             return _context.Advisor.Any(e => e.AdvisorID == id);
+        }
+
+        private Dictionary<int, string> FindContracts(int? id)
+        {
+            if (id == null)
+            {
+                return null;
+            }
+
+            var contracts = _context.contractAdvisor.Where(c => c.AdvisorID == id);
+            Dictionary<int, string> contractDict = new Dictionary<int, string>();
+            foreach (var contract in contracts)
+            {
+                var contractId = _context.Contract.Where(a => a.ContractID == contract.ContractID).First().ContractID;
+                var contractEN = _context.Contract.Where(a => a.ContractID == contract.ContractID).First().EvidenceNumber;
+                contractDict.Add(contractId, contractEN);
+            }
+            return contractDict;
         }
     }
 }

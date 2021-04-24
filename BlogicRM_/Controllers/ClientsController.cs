@@ -34,6 +34,7 @@ namespace BlogicRM_.Controllers
             }
 
             var client = await _context.Client
+                .Include(c => c.Contracts)
                 .FirstOrDefaultAsync(m => m.ClientID == id);
             if (client == null)
             {
