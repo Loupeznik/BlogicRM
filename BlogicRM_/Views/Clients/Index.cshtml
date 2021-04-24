@@ -9,6 +9,26 @@
 <p>
     <a asp-action="Create">Vytvořit klienta</a>
 </p>
+
+<div class="my-3">
+    <form asp-for="Index" class="row g-2 mb-1">
+        <div class="col-auto">
+            <label for="search" class="form-label">Filtrovat poradce podle jména nebo příjmení</label>
+        </div>
+        <div class="col-auto">
+            <input type="search" id="search" name="Filter" class="form-control">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Hledat</button>
+        </div>
+    </form>
+    @if (ViewBag.Filter != null)
+    {
+        <p>Filtruji poradce odpovídající filtru <i>@ViewBag.Filter</i></p>
+        <a asp-action="Index">Zobrazit úplný seznam</a>
+    }
+</div>
+
 <table class="table">
     <thead>
         <tr>

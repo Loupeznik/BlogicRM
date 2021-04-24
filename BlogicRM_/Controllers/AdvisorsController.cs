@@ -20,9 +20,16 @@ namespace BlogicRM_.Controllers
         }
 
         // GET: Advisors
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string Filter)
         {
-            return View(await _context.Advisor.ToListAsync());
+            var advisors = _context.Advisor.AsQueryable();
+
+            if (!String.IsNullOrEmpty(Filter))
+            {
+                advisors = advisors.Where(a => a.Name.Contains(Filter) || a.Surname.Contains(Filter));
+                ViewData["Filter"] = Filter;
+            }
+            return View(await advisors.ToListAsync());
         }
 
         // GET: Advisors/Details/5

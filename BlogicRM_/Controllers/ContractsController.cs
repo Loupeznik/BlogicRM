@@ -20,9 +20,15 @@ namespace BlogicRM_.Controllers
         }
 
         // GET: Contracts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string Filter)
         {
             var blogicRM = _context.Contract.Include(c => c.Administrator).Include(c => c.Client).Include(c => c.Institution);
+
+            if (!String.IsNullOrEmpty(Filter))
+            {
+                blogicRM = _context.Contract.Where(c => c.EvidenceNumber.Contains(Filter)).Include(c => c.Administrator).Include(c => c.Client).Include(c => c.Institution);
+                ViewData["Filter"] = Filter;
+            }
             return View(await blogicRM.ToListAsync());
         }
 
