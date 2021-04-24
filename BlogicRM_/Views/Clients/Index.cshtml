@@ -7,13 +7,14 @@
 <h1>@ViewBag.Title</h1>
 
 <p>
-    <a asp-action="Create">Vytvořit klienta</a>
+    <a asp-action="Create">Vytvořit klienta</a> |
+    <a asp-action="ExportToCSV">Exportovat klienty do CSV</a>
 </p>
 
 <div class="my-3">
     <form asp-for="Index" class="row g-2 mb-1">
         <div class="col-auto">
-            <label for="search" class="form-label">Filtrovat poradce podle jména nebo příjmení</label>
+            <label for="search" class="form-label">Filtrovat klienty podle jména nebo příjmení</label>
         </div>
         <div class="col-auto">
             <input type="search" id="search" name="Filter" class="form-control">
@@ -24,7 +25,7 @@
     </form>
     @if (ViewBag.Filter != null)
     {
-        <p>Filtruji poradce odpovídající filtru <i>@ViewBag.Filter</i></p>
+        <p>Filtruji klienty odpovídající filtru <i>@ViewBag.Filter</i></p>
         <a asp-action="Index">Zobrazit úplný seznam</a>
     }
 </div>

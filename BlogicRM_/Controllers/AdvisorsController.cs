@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogicRM_.Data;
 using BlogicRM_.Models;
+using System.Text;
 
 namespace BlogicRM_.Controllers
 {
@@ -153,6 +154,34 @@ namespace BlogicRM_.Controllers
             _context.Advisor.Remove(advisor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public async Task<IActionResult> ExportToCSV()
+        {
+            var data = await _context.Advisor.ToListAsync();
+
+            try
+            {
+                StringBuilder sb = new();
+                sb.AppendLine("ID;Jméno;Příjmení;Email;Rodné číslo;Věk;Telefon");
+                foreach (var a in data)
+                {
+                    sb.AppendLine(
+                        $"{a.AdvisorID};" +
+                        $"{a.Name};" +
+                        $"{a.Surname};" +
+                        $"{a.Email};" +
+                        $"{a.BirthNumber};" +
+                        $"{a.Age};" +
+                        $"{a.Phone}"
+                        );
+                }
+                return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", "BlogicRM_poradci_export.csv");
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         private bool AdvisorExists(int id)

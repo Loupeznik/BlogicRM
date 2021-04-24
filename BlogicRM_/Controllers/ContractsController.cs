@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogicRM_.Data;
 using BlogicRM_.Models;
+using System.Text;
 
 namespace BlogicRM_.Controllers
 {
@@ -245,6 +246,49 @@ namespace BlogicRM_.Controllers
             _context.contractAdvisor.Remove(record);
             await _context.SaveChangesAsync();
             return RedirectToAction("Advisors", new { id });
+        }
+
+        public async Task<IActionResult> ExportToCSV()
+        {
+            var data = await _context.Contract.Include(c => c.Administrator).Include(c => c.Client).Include(c => c.Institution).ToListAsync();
+
+            try
+            {
+                StringBuilder sb = new();
+                sb.AppendLine("ID;Evidenční číslo;Instituce;Klient;Správce;Datum uzavření;Datum platnosti;Datum ukončení;Poradci");
+                foreach (var c in data)
+                {
+                    Dictionary<int, string> advisors = FindAdvisors(c.ContractID);
+                    string contractAdvisors = "";
+                    foreach (var a in advisors)
+                    {
+                        if (a.Key < advisors.Count)
+                        {
+                            contractAdvisors += $"{a.Value},";
+                        }
+                        else
+                        {
+                            contractAdvisors += $"{a.Value}";
+                        }
+                    }
+                    sb.AppendLine(
+                        $"{c.ContractID};" +
+                        $"{c.EvidenceNumber};" +
+                        $"{c.Institution.Name};" +
+                        $"{c.Client.Name} {c.Client.Surname};" +
+                        $"{c.Administrator.Name} {c.Administrator.Surname};" +
+                        $"{c.ConclusionDate};" +
+                        $"{c.ValidityDate};" +
+                        $"{c.EndDate};" +
+                        $"{contractAdvisors}"
+                        );
+                }
+                return File(Encoding.UTF8.GetBytes(sb.ToString()), "text/csv", "BlogicRM_smlouvy_export.csv");
+            }
+            catch
+            {
+                return RedirectToAction("Index");
+            }
         }
 
         private bool ContractExists(int id)
