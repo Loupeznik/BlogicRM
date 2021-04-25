@@ -41,7 +41,6 @@ namespace BlogicRM_.Models
         public DateTime EndDate { get; set; }
 
         [Display(Name = "Instituce")]
-
         public Institution Institution { get; set; }
 
         [Display(Name = "Klient")]
@@ -52,6 +51,5 @@ namespace BlogicRM_.Models
 
         [Display(Name = "Poradci")]
         public ICollection<ContractAdvisor> Advisors { get; set; }
-
     }
 }

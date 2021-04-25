@@ -17,6 +17,5 @@ namespace BlogicRM_.Models
         public List<Contract> Administering { get; set; }
 
         public ICollection<ContractAdvisor> Contracts { get; set; }
-
     }
 }
