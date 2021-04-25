@@ -19,7 +19,7 @@
     </dl>
 </div>
 
-<table class="table">
+<table class="table table-responsive">
     <thead>
         <tr>
             <th>
@@ -38,7 +38,7 @@
                 <td>
                     @using (Html.BeginForm("DeleteAdvisor", "Contracts", new { id = Model.ContractID, advisorId = advisor.Key }))
                     {
-                        <input type="submit" value="Delete" onclick="return confirm('Opravdu chcete z této smlouvy odstranit poradce @advisor.Value');" />
+                        <input type="submit" value="Odstranit" class="btn btn-danger" onclick="return confirm('Opravdu chcete z této smlouvy odstranit poradce @advisor.Value');" />
                     }
                 </td>
             </tr>
